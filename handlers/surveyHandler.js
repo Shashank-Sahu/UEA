@@ -90,7 +90,6 @@ const getUserSurveyResult = (req, res) => {
     fromDate.setDate(toDate.getDate() - 7);
     fromDate = fromDate.toLocaleDateString();
     toDate = toDate.toLocaleDateString();
-    console.log(toDate);
     Survey.find({ createdOn: { $gte: fromDate, $lte: toDate }, email: userEmail })
         .then(surveys => {
             res.json(surveys);
@@ -112,7 +111,34 @@ const filterSurvey = (req, res) => {
     toDate = toDate.toLocaleDateString();
     Survey.find({ createdOn: { $gte: fromDate, $lte: toDate }, country: surveyCountry, age: { $gte: surveyAgeFrom, $lte: surveyAgeTo }, state: surveyState })
         .then(surveys => {
-            res.json(surveys);
+            let polls = [];
+            surveys.forEach((survey) => {
+                if (polls.length) {
+                    if (survey.createdOn.getTime() == polls[polls.length - 1].createdOn.getTime()) {
+                        let poll = polls[polls.length - 1];
+                        poll.userCount++;
+                        const sid = survey.indoorData.toJSON();
+                        const sod = survey.outdoorData.toJSON();
+                        const pid = poll.indoorData.toJSON();
+                        const pod = poll.outdoorData.toJSON();
+                        for (const [key, value] of Object.entries(sid)) {
+                            pid[key] ? pid[key] += value : pid[key] = value;
+                        }
+                        for (const [key, value] of Object.entries(sod)) {
+                            pod[key] ? pod[key] += value : pod[key] = value;
+                        }
+                        poll.indoorData = pid;
+                        poll.outdoorData = pod;
+                        polls[polls.length - 1] = poll;
+                    }
+                    else {
+                        polls.push({ userCount: 1, indoorData: survey.indoorData, outdoorData: survey.outdoorData, createdOn: survey.createdOn });
+                    }
+                } else {
+                    polls.push({ userCount: 1, indoorData: survey.indoorData, outdoorData: survey.outdoorData, createdOn: survey.createdOn });
+                }
+            })
+            res.json(polls);
         })
         .catch(err => {
             res.status(500).json(err);
