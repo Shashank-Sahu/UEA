@@ -10,6 +10,6 @@ router.delete("/logout", logoutUser);
 
 router.get("/verify", verifyUser);
 
-// router.get("/survey-check", surveyCheck);
+router.post("/survey-check", surveyCheck);
 
 export default router;

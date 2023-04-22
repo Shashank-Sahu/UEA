@@ -1,9 +1,10 @@
 import Poll from "../models/Survey/pollModel.js";
 import Survey from "../models/Survey/surveyModel.js";
+import User from "../models/User/userModel.js";
 
 ////////////////////////////////////////////////////////Survey/Poll Creation////////////////////////////////////////////////////////
 
-const createSurvey = (req, res) => {
+const createSurvey = async (req, res) => {
     const surveyCreatedOn = new Date().toLocaleDateString();
     const userAge = req.body.age;
     const userCountry = req.body.country;
@@ -21,8 +22,8 @@ const createSurvey = (req, res) => {
         indoorData: userIndoorData,
         outdoorData: userOutdoorData
     });
+    await User.findOneAndUpdate({ email: userEmail }, { lastSubmitted: surveyCreatedOn });
     survey.save().then(async (survey) => {
-        // await User.findOneAndUpdate({ email: userEmail }, { lastSubmitted: surveyCreatedOn });
         Poll.findOne({ createdOn: survey.createdOn })
             .then(poll => {
                 if (poll) {
@@ -82,7 +83,25 @@ const getPollResults = (req, res) => {
         })
 }
 
+const getUserSurveyResult = (req, res) => {
+    const userEmail = req.body.email;
+    let fromDate = new Date();
+    let toDate = new Date();
+    toDate.setDate(fromDate.getDate() - 7);
+    fromDate = fromDate.toLocaleDateString();
+    toDate = toDate.toLocaleDateString();
+    console.log(toDate);
+    Survey.find({ createdOn: { $gte: toDate, $lte: fromDate }, email: userEmail })
+        .then(surveys => {
+            res.json(surveys);
+        })
+        .catch(err => {
+            res.status(500).json(err);
+        });
+}
+
 export {
     createSurvey,
-    getPollResults
+    getPollResults,
+    getUserSurveyResult
 }

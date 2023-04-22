@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import userController from './controllers/userController.js';
 import surveyController from './controllers/surveyController.js'
 const app = express();
-const port = 3000;
+const port = 8080;
 
 
 app.use(cookieParser());

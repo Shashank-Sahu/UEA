@@ -99,17 +99,23 @@ const registerUser = (req, res) => {
 
 ////////////////////////////////////////////////////////Survey Check////////////////////////////////////////////////////////
 
-const surveyCheck = (req, res) => {
+const surveyCheck = (req, res, next) => {
     const userEmail = req.body.email;
+    const country = req.body.country; //for TESTING
     const surveyCreatingOn = new Date().toLocaleDateString();
     User.findOne({ email: userEmail })
         .then(user => {
-            if (!user.lastSubmiited != surveyCreatingOn)
-                res.json({ user });
+            if (!user.lastSubmitted || user.lastSubmitted.toLocaleDateString() != surveyCreatingOn) {
+                {
+                    if (country) //for TESTING
+                        next();
+                    else
+                        res.json({ user });
+                }
+            }
             else
-                res.status(400).json("User Not Allowed to submit Survey Again!");
+                res.status(400).json({ message: "User Not Allowed to submit Survey Again!" });
         })
-
 }
 
 export {
