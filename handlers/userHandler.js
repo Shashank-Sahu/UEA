@@ -105,7 +105,7 @@ const surveyCheck = (req, res, next) => {
     const surveyCreatingOn = new Date().toLocaleDateString();
     User.findOne({ email: userEmail })
         .then(user => {
-            if (!user.lastSubmitted || user.lastSubmitted.toLocaleDateString() != surveyCreatingOn) {
+            if (user && (!user.lastSubmitted || user.lastSubmitted.toLocaleDateString() != surveyCreatingOn)) {
                 {
                     if (country) //for TESTING
                         next();

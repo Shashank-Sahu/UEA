@@ -87,11 +87,30 @@ const getUserSurveyResult = (req, res) => {
     const userEmail = req.body.email;
     let fromDate = new Date();
     let toDate = new Date();
-    toDate.setDate(fromDate.getDate() - 7);
+    fromDate.setDate(toDate.getDate() - 7);
     fromDate = fromDate.toLocaleDateString();
     toDate = toDate.toLocaleDateString();
     console.log(toDate);
-    Survey.find({ createdOn: { $gte: toDate, $lte: fromDate }, email: userEmail })
+    Survey.find({ createdOn: { $gte: fromDate, $lte: toDate }, email: userEmail })
+        .then(surveys => {
+            res.json(surveys);
+        })
+        .catch(err => {
+            res.status(500).json(err);
+        });
+}
+
+const filterSurvey = (req, res) => {
+    const surveyCountry = req.body.country;
+    const surveyAgeFrom = req.body.ageFrom;
+    const surveyAgeTo = req.body.ageTo;
+    const surveyState = req.body.state;
+    let toDate = new Date(req.body.toDate);
+    let fromDate = new Date();
+    fromDate.setDate(toDate.getDate() - 7);
+    fromDate = fromDate.toLocaleDateString();
+    toDate = toDate.toLocaleDateString();
+    Survey.find({ createdOn: { $gte: fromDate, $lte: toDate }, country: surveyCountry, age: { $gte: surveyAgeFrom, $lte: surveyAgeTo }, state: surveyState })
         .then(surveys => {
             res.json(surveys);
         })
@@ -103,5 +122,6 @@ const getUserSurveyResult = (req, res) => {
 export {
     createSurvey,
     getPollResults,
-    getUserSurveyResult
+    getUserSurveyResult,
+    filterSurvey
 }
