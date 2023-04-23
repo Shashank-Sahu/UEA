@@ -141,6 +141,7 @@ const filterSurvey = (req, res) => {
             res.json(polls);
         })
         .catch(err => {
+            console.log(err);
             res.status(500).json(err);
         });
 }
