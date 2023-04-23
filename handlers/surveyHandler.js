@@ -119,8 +119,20 @@ const filterSurvey = (req, res) => {
                         poll.userCount++;
                         const sid = survey.indoorData.toJSON();
                         const sod = survey.outdoorData.toJSON();
-                        const pid = poll.indoorData.toJSON();
-                        const pod = poll.outdoorData.toJSON();
+                        let pid;
+                        try {
+                            pid = poll.indoorData.toJSON();
+                        }
+                        catch {
+                            pid = poll.indoorData;
+                        }
+                        let pod;
+                        try {
+                            pod = poll.outdoorData.toJSON();
+                        }
+                        catch {
+                            pod = poll.outdoorData;
+                        }
                         for (const [key, value] of Object.entries(sid)) {
                             pid[key] ? pid[key] = Number(pid[key]) + Number(value) : pid[key] = Number(value);
                         }
