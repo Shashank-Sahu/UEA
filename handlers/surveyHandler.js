@@ -122,10 +122,10 @@ const filterSurvey = (req, res) => {
                         const pid = poll.indoorData.toJSON();
                         const pod = poll.outdoorData.toJSON();
                         for (const [key, value] of Object.entries(sid)) {
-                            pid[key] ? pid[key] += value : pid[key] = value;
+                            pid[key] ? pid[key] += Number(value) : pid[key] = Number(value);
                         }
                         for (const [key, value] of Object.entries(sod)) {
-                            pod[key] ? pod[key] += value : pod[key] = value;
+                            pod[key] ? pod[key] += Number(value) : pod[key] = Number(value);
                         }
                         poll.indoorData = pid;
                         poll.outdoorData = pod;
