@@ -13,12 +13,18 @@ const setTokens = (res, user) => {
     res.cookie("token", token,
         {
             expires: new Date(Date.now() + (1000 * 600)),
-            // httpOnly: true
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            domain: "user-engagement-analytics.netlify.app"
         });
     res.cookie("refreshToken", refreshToken,
         {
             expires: new Date(Date.now() + (1000 * 60 * 60 * 24 * 30)),
-            // httpOnly: true
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            domain: "user-engagement-analytics.netlify.app"
         });
 };
 
