@@ -10,6 +10,7 @@ const port = 8080;
 const corsOptions = {
     origin: 'https://user-engagement-analytics.netlify.app',
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
     preflightContinue: false,
     optionsSuccessStatus: 204
 }
