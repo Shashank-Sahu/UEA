@@ -105,7 +105,7 @@ const filterSurvey = (req, res) => {
     const surveyAgeTo = req.body.ageTo;
     const surveyState = req.body.state;
     let toDate = new Date(req.body.toDate);
-    let fromDate = new Date();
+    let fromDate = new Date(toDate);
     fromDate.setDate(toDate.getDate() - 7);
     fromDate = fromDate.toLocaleDateString();
     toDate = toDate.toLocaleDateString();
